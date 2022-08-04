@@ -1,5 +1,5 @@
 // import modules
-import {photographer} from "../factories/photographer.js";
+import {photographerFactory} from "../factories/photographer.js";
 
 // use an async IIFE so we are able to wait for the resolution of promises during execution
 (async() => {
@@ -19,9 +19,9 @@ import {photographer} from "../factories/photographer.js";
             .forEach(x => {
                 const
                     // create a new photographer object instance
-                    model = new photographer(x);
+                    model = photographerFactory(`card`, x);
                 // create a new element for the photographer card and add it to DOM
-                document.querySelector(`.photographer_section`).appendChild(model.getCard());
+                document.querySelector(`.photographer_section`).appendChild(model.get());
             });
 
     } catch (err) {

@@ -1,14 +1,26 @@
+/* eslint-disable no-empty-function */
 /* eslint-disable class-methods-use-this */
 
 // destructuring assignment on function parameters will
 // be used whenever possible to set local variables values
 
 const
-    // base class that will be extended to provide objects
-    // with the ability to create new elements in the DOM
-    // constructor is not specified since it would be empty
-    domElementsCreator = class {
-        // element creation
+    // base class for the factory - it will be extended to provide objects with
+    // the ability to create new elements in the DOM and with methods to override
+    photographer = class {
+        // constructor
+        constructor({name = null, id = null, city = null, country = null, tagline = null, price = null, portrait = null}) {
+            // assign properties
+            this.name = name;
+            this.id = id;
+            this.city = city;
+            this.country = country;
+            this.tagline = tagline;
+            this.price = price;
+            this.portrait = `assets/photographers/${ portrait }`;
+        }
+
+        // DOM element creation
         create({tag = null, attributes = null, properties = null}) {
             if (typeof tag !== `string`)
                 // throw error if tag is invalid
@@ -37,28 +49,17 @@ const
             // return new element
             return element;
         }
-    },
-    // use an ES6 class to create the "photographer" object because
-    // nesting factory functions doesn't sound like a good idea monkaHmm
-    photographer = class extends domElementsCreator {
-        // constructor
-        constructor({name = null, id = null, city = null, country = null, tagline = null, price = null, portrait = null}) {
-            // call superclass constructor so we can use 'this'
-            super();
-            // assign properties
-            this.name = name;
-            this.id = id;
-            this.city = city;
-            this.country = country;
-            this.tagline = tagline;
-            this.price = price;
-            this.portrait = `assets/photographers/${ portrait }`;
-        }
 
-        // use a factory function to create the photographer card in the DOM
-        // the factory function is a functional programming concept and should not
-        // be confused with the factory pattern which is a design pattern
-        getCard() {
+        // retrieve DOM element to insert (important : this is a method - not a getter)
+        // this method will be overriden in subclasses to respect the factory pattern
+        get() {}
+    },
+    // constructor is not specified since it would be empty
+    photographerCard = class extends photographer {
+        // use a factory function to override the superclass method and create the photographer
+        // card in the DOM - the factory function is a functional programming concept and should
+        // not be confused with the factory pattern which is a design pattern
+        get() {
             const
                 // specify new DOM elements to create
                 [ article, img, a, h2, div, span1, span2, span3 ] = [ {
@@ -100,8 +101,11 @@ const
             return article;
         }
 
-        // use another factory function to create the header
-        getHeader() {
+    },
+    // constructor is not specified since it would be empty
+    photographerHeader = class extends photographer {
+        // use another factory function to create the photographer header in the DOM
+        get() {
             const
                 // specify new DOM elements to create
                 [ div1, div2, h1, span1, span2, button, img ] = [ {
@@ -129,7 +133,6 @@ const
                     // instance inside it and it is possible to access the superclass's method
                 } ].map(x => this.create(x));
 
-
             // append h1 and new spans as child nodes to inner div
             [ h1, span1, span2 ].forEach(x => div2.appendChild(x));
 
@@ -139,6 +142,18 @@ const
             // return header div
             return div1;
         }
+    },
+    // actual photographer factory
+    photographerFactory = function(type, data) {
+        // select the instance to create
+        switch (type) {
+        case `card` :
+            return new photographerCard(data);
+        case `header` :
+            return new photographerHeader(data);
+        default :
+            throw new TypeError(`primitive value is not of the expected type`);
+        }
     };
 
-export {photographer};
+export {photographerFactory};

@@ -1,7 +1,7 @@
 // eslint-disable-next-line no-unused-vars
 import {displayModal, closeModal} from "../utils/contactForm.js";
 // import modules
-import {photographer} from "../factories/photographer.js";
+import {photographerFactory} from "../factories/photographer.js";
 
 // use an async IIFE so we are able to wait for the resolution of promises during execution
 (async() => {
@@ -33,10 +33,10 @@ import {photographer} from "../factories/photographer.js";
 
         const
             // create a new photographer object instance
-            model = new photographer(photographerData);
+            model = photographerFactory(`header`, photographerData);
 
         // create a new element for the photographer header and add it to DOM
-        document.querySelector(`#main`).appendChild(model.getHeader());
+        document.querySelector(`#main`).appendChild(model.get());
 
         // add event listeners to modal popup
         document.querySelector(`#contact-open`).addEventListener(`click`, displayModal);
