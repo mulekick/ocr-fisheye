@@ -18,10 +18,10 @@ import {photographerFactory} from "../factories/photographer.js";
             // loop on each photographers data array's element
             .forEach(x => {
                 const
-                    // create a new photographer object instance
-                    model = photographerFactory(`card`, x);
+                    // create a new photographer card object instance
+                    pcard = photographerFactory(`card`, x);
                 // create a new element for the photographer card and add it to DOM
-                document.querySelector(`.photographer_section`).appendChild(model.get());
+                document.querySelector(`.photographer_section`).appendChild(pcard.get());
             });
 
     } catch (err) {

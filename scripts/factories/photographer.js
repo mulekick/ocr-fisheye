@@ -152,7 +152,7 @@ const
         case `header` :
             return new photographerHeader(data);
         default :
-            throw new TypeError(`primitive value is not of the expected type`);
+            throw new TypeError(`invalid values provided, photographer factory can't return an object`);
         }
     };
 

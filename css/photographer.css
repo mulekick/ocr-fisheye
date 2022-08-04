@@ -5,7 +5,7 @@
 .photograph-header {
     background-color: #FAFAFA;
     height: 300px;
-    margin: 0 100px;
+    margin: 0 100px 50px 100px;
     /* added styles */
     display: flex;
     flex-direction: row;
@@ -49,6 +49,54 @@
     border-radius: 100px;
     object-fit: cover;
 }
+
+.photograph-media-list {
+    margin: 0 100px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.photograph-media {
+    width: 450px;
+    margin-right: calc((100% - 3 * 450px) / 2);
+}
+
+.photograph-media:nth-of-type(3n) {
+    margin-right: 0;
+}
+
+.photograph-media img, .photograph-media video {
+    width: 450px;
+    height: 450px;
+    border-radius: 10px;
+    object-fit: cover;
+}
+
+.photograph-media div {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin: 5px 0 17.5px 0;
+    height: 30px;
+}
+.photograph-media span:first-of-type {
+    width: 375px;
+}
+
+.photograph-media span {
+    color: #901C1C;
+    font-size: 25px;
+}
+
+.photograph-media i {
+    color: #901C1C;
+    font-size: 25px;
+}
+
+
 /* ------- END ADDED STYLES ------- */
 
 .contact_button {
