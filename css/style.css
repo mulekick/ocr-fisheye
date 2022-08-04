@@ -5,7 +5,6 @@ body {
     margin: 0;
 }
 
-
 header {
     display: flex;
     flex-direction: row;
@@ -17,6 +16,8 @@ header {
 h1 {
     color: #901C1C;
     margin-right: 100px;
+    /* added styles */
+    font-weight: 100;
 }
 
 .logo {
@@ -39,12 +40,46 @@ h1 {
     flex-direction: column;
 }
 
+
+.photographer_section article a {
+    text-decoration: none;
+    text-align: center;
+    }
+
 .photographer_section article h2 {
     color: #D3573C;
     font-size: 36px;
+    /* added styles */
+    margin: 15px 0 5px 0;
+    font-weight: 100;
 }
 
 .photographer_section article img {
     height: 200px;
     width: 200px;
+    /* added styles */
+    border-radius: 100px;
+    object-fit: cover;
 }
+
+/* ------ START ADDED STYLES ------ */
+.photographer_section article div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.photographer_section article div > span:nth-child(1) {
+    color: #901C1C;
+    font-size: 12.5px;
+}
+
+.photographer_section article div > span:nth-child(2) {
+    font-size: 10px;
+}
+
+.photographer_section article div > span:nth-child(3) {
+    color: #525252;
+    font-size: 10px;
+}
+/* ------- END ADDED STYLES ------- */

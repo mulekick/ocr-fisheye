@@ -6,7 +6,50 @@
     background-color: #FAFAFA;
     height: 300px;
     margin: 0 100px;
+    /* added styles */
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 50px;
 }
+
+/* ------ START ADDED STYLES ------ */
+/* added styles */
+.photograph-header div {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.photograph-header div > h1:nth-child(1) {
+    color: #D3573C;
+    font-size: 70px;
+    margin: 7.5px 0;
+    font-weight: 100;
+}
+
+.photograph-header div > span:nth-child(2) {
+    color: #901C1C;
+    font-size: 25px;
+    margin: 7.5px 0;
+}
+
+.photograph-header div > span:nth-child(3) {
+    font-size: 17.5px;
+    margin: 7.5px 0;
+}
+
+.photograph-header img {
+    height: 200px;
+    width: 200px;
+    /* added styles */
+    border-radius: 100px;
+    object-fit: cover;
+}
+/* ------- END ADDED STYLES ------- */
 
 .contact_button {
     font-size: 20px;

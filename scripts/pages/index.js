@@ -1,45 +1,32 @@
-    async function getPhotographers() {
-        // Penser à remplacer par les données récupérées dans le json
-        const photographers = [
-            {
-                "name": "Ma data test",
-                "id": 1,
-                "city": "Paris",
-                "country": "France",
-                "tagline": "Ceci est ma data test",
-                "price": 400,
-                "portrait": "account.png"
-            },
-            {
-                "name": "Autre data test",
-                "id": 2,
-                "city": "Londres",
-                "country": "UK",
-                "tagline": "Ceci est ma data test 2",
-                "price": 500,
-                "portrait": "account.png"
-            },
-        ]
-        // et bien retourner le tableau photographers seulement une fois
-        return ({
-            photographers: [...photographers, ...photographers, ...photographers]})
+// import modules
+import {photographer} from "../factories/photographer.js";
+
+// use an async IIFE so we are able to wait for the resolution of promises during execution
+(async() => {
+
+    try {
+
+        const
+            // retrieve static photographers data from server using fetch
+            readable = await fetch(`/data/photographers.json`, {method: `GET`}),
+            // parse response stream into a JSON object using json() method
+            // destructure the object to retrieve photographers data array
+            {photographers} = await readable.json();
+
+        // display photographers data
+        photographers
+            // loop on each photographers data array's element
+            .forEach(x => {
+                const
+                    // create a new photographer object instance
+                    model = new photographer(x);
+                // create a new element for the photographer card and add it to DOM
+                document.querySelector(`.photographer_section`).appendChild(model.getCard());
+            });
+
+    } catch (err) {
+        // write to stderr
+        console.error(`error: ${ err.message }`);
     }
 
-    async function displayData(photographers) {
-        const photographersSection = document.querySelector(".photographer_section");
-
-        photographers.forEach((photographer) => {
-            const photographerModel = photographerFactory(photographer);
-            const userCardDOM = photographerModel.getUserCardDOM();
-            photographersSection.appendChild(userCardDOM);
-        });
-    };
-
-    async function init() {
-        // Récupère les datas des photographes
-        const { photographers } = await getPhotographers();
-        displayData(photographers);
-    };
-    
-    init();
-    
+})();

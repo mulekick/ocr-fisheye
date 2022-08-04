@@ -1,37 +1,54 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <link href="css/style.css" rel="stylesheet" type="text/css" />
-    <meta charset="utf-8">
-    <link rel="icon" type="image/png" href="assets/favicon.png">
-    <link href="https://fonts.googleapis.com/css?family=DM+Sans&display=swap" rel="stylesheet">
-    <title>Fisheye - photographe </title>
-  </head>
-  <body>
-    <header>
-      <img src="assets/images/logo.png" class="logo" />
-    </header>
-    <main id="main">
-      <div class="photograph-header">
-        <button class="contact_button" onclick="displayModal()">Contactez-moi</button>
-      </div>
-    </main>
-    <div id="contact_modal">
-			<div class="modal">
-				<header>
-          <h2>Contactez-moi</h2>
-          <img src="assets/icons/close.svg" onclick="closeModal()" />
+<html lang="fr">
+
+    <!--
+        1. code beautify
+        2. head content refactoring + comments
+        3. load js file as a module
+        1. remove onclick attributes on buttons, add ids
+    -->
+
+    <head>
+        <!-- page title -->
+        <title>Fisheye - photographe</title>
+        <!-- browser tab icon -->
+        <link rel="icon" type="image/png" href="assets/favicon.png">
+        <!-- file metadata -->
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="author" content="mulekick" />
+        <meta name="description" content="code is crappy af as usual" />
+        <!-- normalize css file -->
+        <link rel="stylesheet" type="text/css" href="css/normalize.css" />
+        <!-- main css file -->
+        <link rel="stylesheet" type="text/css" href="css/style.css" />
+        <!-- google fonts css file -->
+        <link href="https://fonts.googleapis.com/css?family=DM+Sans&display=swap" rel="stylesheet">
+    </head>
+
+    <body>
+        <header>
+            <img src="assets/images/logo.png" class="logo" />
         </header>
-				<form>
-					<div>
-						<label>Prénom</label>
-						<input />
-					</div>
-          <button class="contact_button">Envoyer</button>
-				</form>
-			</div>
-		</div>
-    <script src="/scripts/pages/photographer.js"></script>
-    <script src="/scripts/utils/contactForm.js"></script>
-  </body>
+        <main id="main">
+        </main>
+        <div id="contact_modal">
+            <div class="modal">
+                <header>
+                    <h2>Contactez-moi</h2>
+                    <img id="contact-close" src="assets/icons/close.svg" />
+                </header>
+                <form>
+                    <div>
+                        <label>Prénom</label>
+                        <input />
+                    </div>
+                    <button class="contact_button">Envoyer</button>
+                </form>
+            </div>
+        </div>
+        <!-- main js file -->
+        <script type="module" src="scripts/pages/photographer.js"></script>
+    </body>
+
 </html>
