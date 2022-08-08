@@ -1,15 +1,21 @@
 /* eslint-disable no-empty-function */
 /* eslint-disable class-methods-use-this */
 
+// import modules
+import {MEDIA_SORT_POPULAR, MEDIA_SORT_DATE, MEDIA_SORT_TITLE} from "../utils/sorting.js";
+import {domNodeCreator} from "../utils/nodeCreator.js";
+
+
 // destructuring assignment on function parameters will
 // be used whenever possible to set local variables values
 
 const
-    // base class for the factory - it will be extended to provide objects with
-    // the ability to create new elements in the DOM and with methods to override
-    photographer = class {
+    // base class for the factory; it will be extended to provide objects with methods to override
+    photographer = class extends domNodeCreator {
         // constructor
         constructor({name = null, id = null, city = null, country = null, tagline = null, price = null, portrait = null}) {
+            // call superclass constructor
+            super();
             // assign properties
             this.name = name;
             this.id = id;
@@ -17,37 +23,7 @@ const
             this.country = country;
             this.tagline = tagline;
             this.price = price;
-            this.portrait = `assets/photographers/${ portrait }`;
-        }
-
-        // DOM element creation
-        create({tag = null, attributes = null, properties = null}) {
-            if (typeof tag !== `string`)
-                // throw error if tag is invalid
-                throw new TypeError(`impossible to create new element: tag parameter is invalid.`);
-
-            const
-                // create DOM element
-                element = document.createElement(tag);
-
-            if (attributes instanceof Array)
-                // append element attributes
-                attributes.forEach(({attr, value}) => {
-                    const
-                        // create new attribute node
-                        newAttribute = document.createAttribute(attr);
-                    // set value
-                    newAttribute.value = value;
-                    // add to new element
-                    element.attributes.setNamedItem(newAttribute);
-                });
-
-            if (properties instanceof Array)
-                // set element DOM properties
-                properties.forEach(({prop, value}) => (element[prop] = value));
-
-            // return new element
-            return element;
+            this.portrait =  portrait === null ? null : `assets/photographers/${ portrait }`;
         }
 
         // retrieve DOM element to insert (important : this is a method - not a getter)
@@ -110,7 +86,7 @@ const
                 // specify new DOM elements to create
                 [ div1, div2, h1, span1, span2, button, img ] = [ {
                     tag: `div`,
-                    attributes: [ {attr: `class`, value: `photograph-header`} ]
+                    attributes: [ {attr: `class`, value: `photographer-header`} ]
                 }, {
                     tag: `div`
                 }, {
@@ -143,6 +119,56 @@ const
             return div1;
         }
     },
+    // use a constructor there to store the current sorting order
+    photographerSortMedia = class extends photographer {
+        // use another factory function to create the photographer sorting div in the DOM
+        get(cb) {
+            const
+                // specify new DOM elements to create
+                [ div1, label, div2, select, option1, option2, option3, i ] = [ {
+                    tag: `div`,
+                    attributes: [ {attr: `class`, value: `photographer-sort-media`} ]
+                }, {
+                    tag: `label`,
+                    attributes: [ {attr: `for`, value: `select-sort-media`} ],
+                    properties: [ {prop: `textContent`, value: `Trier par`} ]
+                }, {
+                    tag: `div`,
+                    attributes: [ {attr: `class`, value: `select-sort-media-wrapper`} ]
+                }, {
+                    tag: `select`,
+                    attributes: [ {attr: `id`, value: `select-sort-media`} ],
+                    listeners: [ {event: `change`, callback: cb} ]
+                }, {
+                    tag: `option`,
+                    attributes: [ {attr: `value`, value: MEDIA_SORT_POPULAR}, {attr: `selected`, value: `true`} ],
+                    properties: [ {prop: `textContent`, value: `Popularité`} ]
+                }, {
+                    tag: `option`,
+                    attributes: [ {attr: `value`, value: MEDIA_SORT_DATE} ],
+                    properties: [ {prop: `textContent`, value: `Date`} ]
+                }, {
+                    tag: `option`,
+                    attributes: [ {attr: `value`, value: MEDIA_SORT_TITLE} ],
+                    properties: [ {prop: `textContent`, value: `Titre`} ]
+                }, {
+                    tag: `i`,
+                    attributes: [ {attr: `class`, value: `fa-solid fa-angle-up`} ]
+                } ].map(x => this.create(x));
+
+            // append options to select
+            [ option1, option2, option3 ].forEach(x => select.appendChild(x));
+
+            // append select and i to wrapper div
+            [ select, i ].forEach(x => div2.appendChild(x));
+
+            // append label and wrapper div to sorting div
+            [ label, div2 ].forEach(x => div1.appendChild(x));
+
+            // return sorting div
+            return div1;
+        }
+    },
     // actual photographer factory
     photographerFactory = function(type, data) {
         // select the instance to create
@@ -151,6 +177,8 @@ const
             return new photographerCard(data);
         case `header` :
             return new photographerHeader(data);
+        case `sorting` :
+            return new photographerSortMedia(data);
         default :
             throw new TypeError(`invalid values provided, photographer factory can't return an object`);
         }
