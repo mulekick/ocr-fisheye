@@ -1,7 +1,7 @@
 // eslint-disable-next-line no-unused-vars
 
 // import modules
-import {displayModal, closeModal} from "../utils/contactForm.js";
+import {displayModal, closeModal, logFormData} from "../utils/contactForm.js";
 import {photographerFactory} from "../factories/photographer.js";
 
 // use an async IIFE so we are able to wait for the resolution of promises during execution
@@ -37,20 +37,21 @@ import {photographerFactory} from "../factories/photographer.js";
         const
             // create a new photographer header object instance
             pheader = photographerFactory(`header`, photographerData),
-            // create a new photographer sorting object instance
-            psorting = photographerFactory(`sorting`, photographerData, photographerMedia),
+            // create a new photographer media list object instance
+            pmedialist = photographerFactory(`list`, photographerData, photographerMedia),
             // create a new photographer likes object instance
             plikes = photographerFactory(`likes`, photographerData);
 
-        // create new elements for the photographer header and sorting and add it to DOM
-        document.querySelector(`#main`).append(pheader.get(), psorting.get(plikes), plikes.get(psorting.media));
+        // create new elements for the photographer header, media list and likes and add it to DOM
+        document.querySelector(`#main`).append(pheader.get(), pmedialist.get(plikes), plikes.get(pmedialist.media));
 
-        // dispatch a change event on the select to display photographer's media sorted by default
+        // dispatch a change event on the select to display photographer's media list sorted by default
         document.querySelector(`#select-sort-media`).dispatchEvent(new Event(`change`));
 
         // add event listeners to modal popup
         document.querySelector(`#contact-open`).addEventListener(`click`, displayModal);
         document.querySelector(`#contact-close`).addEventListener(`click`, closeModal);
+        document.querySelector(`#contact-form`).addEventListener(`submit`, logFormData);
 
     } catch (err) {
         // write to stderr

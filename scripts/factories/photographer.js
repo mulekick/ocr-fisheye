@@ -1,9 +1,10 @@
+/* eslint-disable no-constructor-return */
 /* eslint-disable no-invalid-this */
 /* eslint-disable no-empty-function */
 /* eslint-disable class-methods-use-this */
 
 // import modules
-import {MEDIA_SORT_POPULAR, MEDIA_SORT_DATE, MEDIA_SORT_TITLE, manageMediaLikes} from "../utils/utils.js";
+import {MEDIA_SORT_POPULAR, MEDIA_SORT_DATE, MEDIA_SORT_TITLE, manageMediaLikes, openLightbox} from "../utils/utils.js";
 import {domNodeCreator} from "../utils/nodeCreator.js";
 import {mediaFactory} from "./media.js";
 
@@ -12,6 +13,103 @@ import {mediaFactory} from "./media.js";
 // be used whenever possible to set local variables values
 
 const
+    // -------------------------------------------------------
+    // use a singleton to manage the lightbox
+    lightboxSingleton = class extends domNodeCreator {
+        // constructor
+        constructor(pmedialist) {
+            // call superclass constructor
+            super();
+            const
+                // retrieve constructor function
+                cf = Object.getPrototypeOf(this).constructor;
+            // if the static singleton is not null ...
+            if (cf.instance instanceof cf)
+                // return it (any call to new() will always return the same object)
+                return cf.instance;
+            // else, create the singleton and init its properties
+            this.mediaList = pmedialist;
+            // store 'this' in the static singleton, return is implicit
+            cf.instance = this;
+        }
+
+        // use a factory function to create the photographer lightbox div in the DOM
+        get(media) {
+            const
+                // specify new DOM elements to create
+                [ div1, div2, div3, img1, div5, img2, img3, span ] = [ {
+                    tag: `div`,
+                    attributes: [ {attr: `class`, value: `media-lightbox-container`} ]
+                }, {
+                    tag: `div`,
+                    attributes: [ {attr: `class`, value: `media-lightbox`} ]
+                }, {
+                    tag: `div`
+                }, {
+                    tag: `img`,
+                    attributes: [ {attr: `src`, value: `assets/icons/navigate-left-lightbox.svg`} ],
+                    // navigate to previous media
+                    listeners: [ {
+                        event: `click`,
+                        callback: () => {
+                            const
+                                // find current media index
+                                index = this.mediaList.media.findIndex(x => x[`id`] === media.id);
+                            // remove current lightbox
+                            document.querySelector(`.media-lightbox-container`).remove();
+                            // open previous media in lightbox
+                            if (index > 0)
+                                document.querySelector(`body`).append(this.get(mediaFactory(this.mediaList.media[index - 1])));
+                        }
+                    } ]
+                }, {
+                    tag: `div`
+                }, {
+                    tag: `img`,
+                    attributes: [ {attr: `src`, value: `assets/icons/close-lightbox.svg`} ],
+                    // close lightbox
+                    listeners: [ {event: `click`, callback: () => document.querySelector(`.media-lightbox-container`).remove()} ]
+                }, {
+                    tag: `img`,
+                    attributes: [ {attr: `src`, value: `assets/icons/navigate-right-lightbox.svg`} ],
+                    // navigate to next media
+                    listeners: [ {
+                        event: `click`,
+                        callback: () => {
+                            const
+                                // find current media index
+                                index = this.mediaList.media.findIndex(x => x[`id`] === media.id);
+                            // remove current lightbox
+                            document.querySelector(`.media-lightbox-container`).remove();
+                            // open next media in lightbox
+                            if (index <  this.mediaList.media.length - 1)
+                                document.querySelector(`body`).append(this.get(mediaFactory(this.mediaList.media[index + 1])));
+                        }
+                    } ]
+                }, {
+                    tag: `span`
+                } ].map(x => this.create(x)),
+
+                // retrieve media div
+                div4 = media.lightbox();
+
+            // append img1 to div3
+            [ img1 ].forEach(x => div3.appendChild(x));
+
+            // append img2, img3 and span to div5
+            [ img2, img3, span ].forEach(x => div5.appendChild(x));
+
+            // append div3 , media div and div5 to div2
+            [ div3, div4, div5 ].forEach(x => div2.appendChild(x));
+
+            // append div2 to div1
+            [ div2 ].forEach(x => div1.appendChild(x));
+
+            // return lightbox div
+            return div1;
+        }
+    },
+    // -------------------------------------------------------
     // base class for the factory; it will be extended to provide objects with methods to override
     photographer = class extends domNodeCreator {
         // constructor
@@ -122,16 +220,18 @@ const
         }
     },
     // use a constructor there to store the media list
-    photographerSortMedia = class extends photographer {
+    photographerMediaList = class extends photographer {
         // constructor
         constructor(data, media) {
             // call superclass constructor
             super(data);
             // assign properties
             this.media = media;
+            // use a singleton to manage the lightbox display
+            this.lightbox = new lightboxSingleton(this);
         }
 
-        // use another factory function to create the photographer sorting div in the DOM
+        // use another factory function to create the photographer media list div in the DOM
         get(plikes) {
             const
                 // specify new DOM elements to create
@@ -191,9 +291,11 @@ const
                                         // create a new media object instance
                                         media = mediaFactory(x);
                                     // retrieve a new element for the media and add it to DOM, bind like management
-                                    // function to the photographer sorting object to preserve a reference to it as
-                                    // well as to the photographer likes object during listener's callback execution
-                                    list.appendChild(media.get(manageMediaLikes.bind(this, media, plikes)));
+                                    // function to the photographer media list object to preserve a reference to it
+                                    // as well as to the photographer likes object during listener's callback execution
+                                    list.appendChild(media.get(manageMediaLikes.bind(this, media, plikes), openLightbox.bind(this, media)));
+
+
                                 });
 
                             // append media list to DOM
@@ -224,16 +326,16 @@ const
             // append select and i to wrapper div
             [ select, i ].forEach(x => div2.appendChild(x));
 
-            // append label and wrapper div to sorting div
+            // append label and wrapper div to list div
             [ label, div2 ].forEach(x => div1.appendChild(x));
 
-            // return sorting div
+            // return list div
             return div1;
         }
     },
     // constructor is not specified since it would be empty
     photographerLikes = class extends photographer {
-        // use another factory function to create the photographer sorting div in the DOM
+        // use another factory function to create the photographer likes div in the DOM
         get(media) {
             const
                 // specify new DOM elements to create
@@ -270,8 +372,8 @@ const
             return new photographerCard(data);
         case `header` :
             return new photographerHeader(data);
-        case `sorting` :
-            return new photographerSortMedia(data, media);
+        case `list` :
+            return new photographerMediaList(data, media);
         case `likes` :
             return new photographerLikes(data, media);
         default :

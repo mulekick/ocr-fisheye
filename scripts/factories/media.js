@@ -34,13 +34,15 @@ const
         // retrieve DOM element to insert (important : this is a method - not a getter)
         // this method will be overriden in subclasses to respect the factory pattern
         get() {}
+
+        lightbox() {}
     },
     // constructor is not specified since it would be empty
     mediaImage = class extends media {
         // use a factory function to override the superclass method and create the photographer
         // card in the DOM - the factory function is a functional programming concept and should
         // not be confused with the factory pattern which is a design pattern
-        get(cb) {
+        get(cbLike, cbClick) {
             const
                 // specify new DOM elements to create
                 [ div1, img, div2, span1, span2, i ] = [ {
@@ -49,7 +51,7 @@ const
                 }, {
                     tag: `img`,
                     attributes: [ {attr: `src`, value: this.image} ],
-                    listeners: [ {event: `click`, callback: () => console.log(`clicked on ${ this.image }`)} ]
+                    listeners: [ {event: `click`, callback: cbClick} ]
                 }, {
                     tag: `div`
                 }, {
@@ -61,7 +63,7 @@ const
                 }, {
                     tag: `i`,
                     attributes: [ {attr: `class`, value: `fa-solid fa-heart`} ],
-                    listeners: [ {event: `click`, callback: cb} ]
+                    listeners: [ {event: `click`, callback: cbLike} ]
                     // use an arrow function expression so 'this' points to the photographer
                     // instance inside it and it is possible to access the superclass's method
                 } ].map(x => this.create(x));
@@ -76,11 +78,33 @@ const
             return div1;
         }
 
+        lightbox() {
+            const
+                // specify new DOM elements to create
+                [ div, img, br, span ] = [ {
+                    tag: `div`
+                }, {
+                    tag: `img`,
+                    attributes: [ {attr: `class`, value: `media`}, {attr: `src`, value: this.image} ]
+                }, {
+                    tag: `br`
+                }, {
+                    tag: `span`,
+                    properties: [ {prop: `textContent`, value: this.title} ]
+                } ].map(x => this.create(x));
+
+            // append img, br and span as child nodes to div
+            [ img, br, span ].forEach(x => div.appendChild(x));
+
+            // return
+            return div;
+        }
+
     },
     // constructor is not specified since it would be empty
     mediaVideo = class extends media {
         // use another factory function to create the photographer header in the DOM
-        get(cb) {
+        get(cbLike, cbClick) {
             const
                 // specify new DOM elements to create
                 [ div1, video, source, div2, span1, span2, i ] = [ {
@@ -88,7 +112,7 @@ const
                     attributes: [ {attr: `class`, value: `photographer-media`} ]
                 }, {
                     tag: `video`,
-                    listeners: [ {event: `click`, callback: () => console.log(`clicked on ${ this.video }`)} ]
+                    listeners: [ {event: `click`, callback: cbClick} ]
                 }, {
                     tag: `source`,
                     attributes: [ {attr: `src`, value: this.video}, {attr: `type`, value: `video/mp4`} ]
@@ -103,7 +127,7 @@ const
                 }, {
                     tag: `i`,
                     attributes: [ {attr: `class`, value: `fa-solid fa-heart`} ],
-                    listeners: [ {event: `click`, callback: cb} ]
+                    listeners: [ {event: `click`, callback: cbLike} ]
                 } ].map(x => this.create(x));
 
             // append source as child nodes to video
@@ -117,6 +141,34 @@ const
 
             // return
             return div1;
+        }
+
+        lightbox() {
+            const
+                // specify new DOM elements to create
+                [ div, video, source, br, span ] = [ {
+                    tag: `div`
+                }, {
+                    tag: `video`,
+                    attributes: [ {attr: `class`, value: `media`}, {attr: `controls`, value: `1`} ]
+                }, {
+                    tag: `source`,
+                    attributes: [ {attr: `src`, value: this.video}, {attr: `type`, value: `video/mp4`} ]
+                }, {
+                    tag: `br`
+                }, {
+                    tag: `span`,
+                    properties: [ {prop: `textContent`, value: this.title} ]
+                } ].map(x => this.create(x));
+
+            // append source as child nodes to video
+            [ source ].forEach(x => video.appendChild(x));
+
+            // append video, br and span as child nodes to div
+            [ video, br, span ].forEach(x => div.appendChild(x));
+
+            // return
+            return div;
         }
     },
     // actual media factory
