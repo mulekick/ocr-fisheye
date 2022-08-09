@@ -40,7 +40,7 @@ const
         // use a factory function to override the superclass method and create the photographer
         // card in the DOM - the factory function is a functional programming concept and should
         // not be confused with the factory pattern which is a design pattern
-        get() {
+        get(cb) {
             const
                 // specify new DOM elements to create
                 [ div1, img, div2, span1, span2, i ] = [ {
@@ -60,7 +60,8 @@ const
                     properties: [ {prop: `textContent`, value: String(this.likes)} ]
                 }, {
                     tag: `i`,
-                    attributes: [ {attr: `class`, value: `fa-solid fa-heart`} ]
+                    attributes: [ {attr: `class`, value: `fa-solid fa-heart`} ],
+                    listeners: [ {event: `click`, callback: cb} ]
                     // use an arrow function expression so 'this' points to the photographer
                     // instance inside it and it is possible to access the superclass's method
                 } ].map(x => this.create(x));
@@ -79,10 +80,10 @@ const
     // constructor is not specified since it would be empty
     mediaVideo = class extends media {
         // use another factory function to create the photographer header in the DOM
-        get() {
+        get(cb) {
             const
                 // specify new DOM elements to create
-                [ div1, video, source, div2, span, i ] = [ {
+                [ div1, video, source, div2, span1, span2, i ] = [ {
                     tag: `div`,
                     attributes: [ {attr: `class`, value: `photographer-media`} ]
                 }, {
@@ -101,16 +102,15 @@ const
                     properties: [ {prop: `textContent`, value: String(this.likes)} ]
                 }, {
                     tag: `i`,
-                    attributes: [ {attr: `class`, value: `fa-solid fa-heart`} ]
-                    // use an arrow function expression so 'this' points to the photographer
-                    // instance inside it and it is possible to access the superclass's method
+                    attributes: [ {attr: `class`, value: `fa-solid fa-heart`} ],
+                    listeners: [ {event: `click`, callback: cb} ]
                 } ].map(x => this.create(x));
 
             // append source as child nodes to video
             [ source ].forEach(x => video.appendChild(x));
 
             // append span and i as child nodes to inner div
-            [ span, i ].forEach(x => div2.appendChild(x));
+            [ span1, span2, i ].forEach(x => div2.appendChild(x));
 
             // append img and inner div as child nodes to outer div
             [ video, div2 ].forEach(x => div1.appendChild(x));

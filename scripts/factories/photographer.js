@@ -1,9 +1,11 @@
+/* eslint-disable no-invalid-this */
 /* eslint-disable no-empty-function */
 /* eslint-disable class-methods-use-this */
 
 // import modules
-import {MEDIA_SORT_POPULAR, MEDIA_SORT_DATE, MEDIA_SORT_TITLE} from "../utils/sorting.js";
+import {MEDIA_SORT_POPULAR, MEDIA_SORT_DATE, MEDIA_SORT_TITLE, manageMediaLikes} from "../utils/utils.js";
 import {domNodeCreator} from "../utils/nodeCreator.js";
+import {mediaFactory} from "./media.js";
 
 
 // destructuring assignment on function parameters will
@@ -119,10 +121,18 @@ const
             return div1;
         }
     },
-    // use a constructor there to store the current sorting order
+    // use a constructor there to store the media list
     photographerSortMedia = class extends photographer {
+        // constructor
+        constructor(data, media) {
+            // call superclass constructor
+            super(data);
+            // assign properties
+            this.media = media;
+        }
+
         // use another factory function to create the photographer sorting div in the DOM
-        get(cb) {
+        get(plikes) {
             const
                 // specify new DOM elements to create
                 [ div1, label, div2, select, option1, option2, option3, i ] = [ {
@@ -138,7 +148,59 @@ const
                 }, {
                     tag: `select`,
                     attributes: [ {attr: `id`, value: `select-sort-media`} ],
-                    listeners: [ {event: `change`, callback: cb} ]
+                    listeners: [ {
+                        event: `change`,
+                        // use an arrow function expression so 'this' points to the photographer
+                        // instance inside it and it is possible to access the superclass's method
+                        callback: e => {
+
+                            let
+                                // retrieve media list
+                                list = document.querySelector(`.photographer-media-list`);
+
+                            if (list !== null)
+                                // delete current media list
+                                list.remove();
+
+                            // create new media list
+                            list = this.create({
+                                tag: `div`,
+                                attributes: [ {attr: `class`, value: `photographer-media-list`} ]
+                            });
+
+                            // populate media list
+                            this.media
+                                .sort((a, b) => {
+                                    switch (e.target.value) {
+                                    // sort by likes, descending
+                                    case MEDIA_SORT_POPULAR :
+                                        return b[`likes`] - a[`likes`];
+                                    // sort by date, descending
+                                    case MEDIA_SORT_DATE :
+                                        return new Date(b[`date`]).getTime() - new Date(a[`date`]).getTime();
+                                    // sort by title, ascending
+                                    case MEDIA_SORT_TITLE :
+                                        return a[`title`] > b[`title`] ? 1 : b[`title`] > a[`title`] ? -1 : 0;
+                                    // don't sort
+                                    default :
+                                        return 0;
+                                    }
+                                })
+                                .forEach(x => {
+                                    const
+                                        // create a new media object instance
+                                        media = mediaFactory(x);
+                                    // retrieve a new element for the media and add it to DOM, bind like management
+                                    // function to the photographer sorting object to preserve a reference to it as
+                                    // well as to the photographer likes object during listener's callback execution
+                                    list.appendChild(media.get(manageMediaLikes.bind(this, media, plikes)));
+                                });
+
+                            // append media list to DOM
+                            document.querySelector(`#main`).appendChild(list);
+
+                        }
+                    } ]
                 }, {
                     tag: `option`,
                     attributes: [ {attr: `value`, value: MEDIA_SORT_POPULAR}, {attr: `selected`, value: `true`} ],
@@ -169,8 +231,39 @@ const
             return div1;
         }
     },
+    // constructor is not specified since it would be empty
+    photographerLikes = class extends photographer {
+        // use another factory function to create the photographer sorting div in the DOM
+        get(media) {
+            const
+                // specify new DOM elements to create
+                [ div, span1, i, span2 ] = [ {
+                    tag: `div`,
+                    attributes: [ {attr: `class`, value: `photographer-likes`} ]
+                }, {
+                    tag: `span`,
+                    // eslint-disable-next-line no-param-reassign
+                    properties: [ {prop: `textContent`, value: `${ media.reduce((r, x) => (r += x[`likes`]), 0) } `} ]
+                }, {
+                    tag: `i`,
+                    attributes: [ {attr: `class`, value: `fa-solid fa-heart`} ]
+                }, {
+                    tag: `span`,
+                    properties: [ {prop: `textContent`, value: `${ this.price }€ / jour`} ]
+                } ].map(x => this.create(x));
+
+            // append i to span 1
+            [ i ].forEach(x => span1.appendChild(x));
+
+            // append span 1 and 2 div
+            [ span1, span2 ].forEach(x => div.appendChild(x));
+
+            // return likes div
+            return div;
+        }
+    },
     // actual photographer factory
-    photographerFactory = function(type, data) {
+    photographerFactory = function(type, data, media) {
         // select the instance to create
         switch (type) {
         case `card` :
@@ -178,7 +271,9 @@ const
         case `header` :
             return new photographerHeader(data);
         case `sorting` :
-            return new photographerSortMedia(data);
+            return new photographerSortMedia(data, media);
+        case `likes` :
+            return new photographerLikes(data, media);
         default :
             throw new TypeError(`invalid values provided, photographer factory can't return an object`);
         }

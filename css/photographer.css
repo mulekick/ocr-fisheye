@@ -149,6 +149,24 @@
     font-size: 25px;
 }
 
+/* ------ PHOTOGRAPHER LIKES -------*/
+
+.photographer-likes {
+    width: 300px;
+    padding: 20px;
+    font-weight: bold;
+    position: fixed;
+    bottom: 0;
+    right: 50px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #D3573C;
+    border-radius: 5px 5px 0 0;
+    color: black;
+    font-size: 20px;
+}
 
 /* ------- END ADDED STYLES ------- */
 
