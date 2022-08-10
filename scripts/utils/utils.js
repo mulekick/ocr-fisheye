@@ -5,6 +5,8 @@ const
     MEDIA_SORT_POPULAR = `sortPopular`,
     MEDIA_SORT_DATE = `sortDate`,
     MEDIA_SORT_TITLE = `sortTitle`,
+    // url validation regex
+    RGX_URL_VALIDATION = /(?:http|https):\/\/(?:[a-zA-Z0-9-]+\.)+[a-zA-Z0-9-]+(?::\d+)?(?<path>\/[^ "]+)?\/[^ "?]+(?:\?pid=(?<photographer>\d+))?$/u,
     // 'like' click event listener callback
     manageMediaLikes = function(...[ media, plikes, event ]) {
         const
@@ -49,4 +51,4 @@ const
         document.querySelector(`body`).append(this.lightbox.get(media));
     };
 
-export {MEDIA_SORT_POPULAR, MEDIA_SORT_DATE, MEDIA_SORT_TITLE, manageMediaLikes, openLightbox};
+export {MEDIA_SORT_POPULAR, MEDIA_SORT_DATE, MEDIA_SORT_TITLE, RGX_URL_VALIDATION, manageMediaLikes, openLightbox};

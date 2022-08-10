@@ -1,6 +1,7 @@
 // eslint-disable-next-line no-unused-vars
 
 // import modules
+import {RGX_URL_VALIDATION} from "../utils/utils.js";
 import {displayModal, closeModal, logFormData} from "../utils/contactForm.js";
 import {photographerFactory} from "../factories/photographer.js";
 
@@ -11,17 +12,19 @@ import {photographerFactory} from "../factories/photographer.js";
 
         const
             // validate current url using regexp
-            match = document.location.href.match(/^(?:http|https):\/\/(?:[a-zA-Z0-9-]+\.)+[a-zA-Z0-9-]+(?::\d+)?\/[^ "]+\?pid=(?<photographer>\d+)$/u);
+            match = document.location.href.match(RGX_URL_VALIDATION);
 
         if (match === null)
-            // throw error if parameter is missing
+            // throw error if url is invalid
             throw new Error(`invalid url`);
 
         const
-            // store the id, we don't want to pop multiple times during array search weSmart
-            photographerId =  Number(match.pop()),
+            // extract site path and photographer id
+            {groups: {path, photographer}} = match,
+            // store photographer id
+            photographerId =  Number(photographer),
             // retrieve static photographers data from server using fetch
-            readable = await fetch(`../../data/photographers.json`, {method: `GET`}),
+            readable = await fetch(`${ path || `` }/data/photographers.json`, {method: `GET`}),
             // parse response stream into a JSON object using json() method
             // destructure the object to retrieve photographers data array
             {photographers, media} = await readable.json(),

@@ -1,4 +1,5 @@
 // import modules
+import {RGX_URL_VALIDATION} from "../utils/utils.js";
 import {photographerFactory} from "../factories/photographer.js";
 
 // use an async IIFE so we are able to wait for the resolution of promises during execution
@@ -7,8 +8,18 @@ import {photographerFactory} from "../factories/photographer.js";
     try {
 
         const
+            // validate current url using regexp
+            match = document.location.href.match(RGX_URL_VALIDATION);
+
+        if (match === null)
+            // throw error if url is invalid
+            throw new Error(`invalid url`);
+
+        const
+            // extract site path
+            {groups: {path}} = match,
             // retrieve static photographers data from server using fetch
-            readable = await fetch(`../../data/photographers.json`, {method: `GET`}),
+            readable = await fetch(`${ path || `` }/data/photographers.json`, {method: `GET`}),
             // parse response stream into a JSON object using json() method
             // destructure the object to retrieve photographers data array
             {photographers} = await readable.json();
