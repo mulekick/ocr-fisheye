@@ -8,7 +8,7 @@ import {photographerFactory} from "../factories/photographer.js";
 
         const
             // retrieve static photographers data from server using fetch
-            readable = await fetch(`/data/photographers.json`, {method: `GET`}),
+            readable = await fetch(`../../data/photographers.json`, {method: `GET`}),
             // parse response stream into a JSON object using json() method
             // destructure the object to retrieve photographers data array
             {photographers} = await readable.json();

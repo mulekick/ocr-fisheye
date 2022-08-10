@@ -21,7 +21,7 @@ import {photographerFactory} from "../factories/photographer.js";
             // store the id, we don't want to pop multiple times during array search weSmart
             photographerId =  Number(match.pop()),
             // retrieve static photographers data from server using fetch
-            readable = await fetch(`/data/photographers.json`, {method: `GET`}),
+            readable = await fetch(`../../data/photographers.json`, {method: `GET`}),
             // parse response stream into a JSON object using json() method
             // destructure the object to retrieve photographers data array
             {photographers, media} = await readable.json(),
