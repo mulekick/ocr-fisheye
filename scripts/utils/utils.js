@@ -6,7 +6,7 @@ const
     MEDIA_SORT_DATE = `sortDate`,
     MEDIA_SORT_TITLE = `sortTitle`,
     // url validation regex
-    RGX_URL_VALIDATION = /^(?:http|https):\/\/(?:[a-zA-Z0-9-]+\.)+[a-zA-Z0-9-]+(?::\d+)?(?<path>\/(?:[^ "]+\/)*)(?<page>[^ "?]+)?(?:\?pid=(?<photographer>\d+))?$/u,
+    RGX_URL_VALIDATION = /^(?:http|https):\/\/(?:[a-zA-Z0-9-]+\.)+[a-zA-Z0-9-]+(?::\d+)?(?<path>\/(?:[^ "]+\/)*)(?<page>[^ "?]+)?(?:\?pid=(?<photographer>\d+))?#?$/u,
     // 'like' click event listener callback
     manageMediaLikes = function(...[ media, plikes, event ]) {
         const

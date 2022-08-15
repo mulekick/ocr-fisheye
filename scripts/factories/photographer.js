@@ -138,11 +138,11 @@ const
         get() {
             const
                 // specify new DOM elements to create
-                [ article, img, a, h2, div, span1, span2, span3 ] = [ {
+                [ article, img, a, h2, div, p1, p2, p3 ] = [ {
                     tag: `article`
                 }, {
                     tag: `img`,
-                    attributes: [ {attr: `src`, value: this.portrait} ]
+                    attributes: [ {attr: `src`, value: this.portrait}, {attr: `alt`, value: this.name} ]
                 }, {
                     tag: `a`,
                     attributes: [ {attr: `href`, value: `photographer.html?pid=${ String(this.id) }`} ]
@@ -150,22 +150,22 @@ const
                     tag: `h2`,
                     properties: [ {prop: `textContent`, value: this.name} ]
                 }, {
-                    tag: `div`
+                    tag: `div` // !!! HIDE IN ACCESSIBILITY TREE !!!
                 }, {
-                    tag: `span`,
+                    tag: `p`,
                     properties: [ {prop: `textContent`, value: `${ this.city }, ${ this.country }`} ]
                 }, {
-                    tag: `span`,
+                    tag: `p`,
                     properties: [ {prop: `textContent`, value: this.tagline} ]
                 }, {
-                    tag: `span`,
+                    tag: `p`,
                     properties: [ {prop: `textContent`, value: `${ String(this.price) }€/jour`} ]
                 // use an arrow function expression so 'this' points to the photographer
                 // instance inside it and it is possible to access the superclass's method
                 } ].map(x => this.create(x));
 
-            // append new spans as child nodes to div
-            [ span1, span2, span3 ].forEach(x => div.appendChild(x));
+            // append new ps as child nodes to div
+            [ p1, p2, p3 ].forEach(x => div.appendChild(x));
 
             // append img and h2 as child nodes to a
             [ img, h2 ].forEach(x => a.appendChild(x));
@@ -184,19 +184,19 @@ const
         get() {
             const
                 // specify new DOM elements to create
-                [ div1, div2, h1, span1, span2, button, img ] = [ {
-                    tag: `div`,
+                [ div1, div2, h1, p1, p2, button, img ] = [ {
+                    tag: `div`, // !!! HIDE IN ACCESSIBILITY TREE !!!
                     attributes: [ {attr: `class`, value: `photographer-header`} ]
                 }, {
-                    tag: `div`
+                    tag: `div` // !!! HIDE IN ACCESSIBILITY TREE !!!
                 }, {
                     tag: `h1`,
                     properties: [ {prop: `textContent`, value: this.name} ]
                 }, {
-                    tag: `span`,
+                    tag: `p`,
                     properties: [ {prop: `textContent`, value: `${ this.city }, ${ this.country }`} ]
                 }, {
-                    tag: `span`,
+                    tag: `p`,
                     properties: [ {prop: `textContent`, value: this.tagline} ]
                 }, {
                     tag: `button`,
@@ -204,13 +204,13 @@ const
                     properties: [ {prop: `textContent`, value: `Contactez-moi`} ]
                 }, {
                     tag: `img`,
-                    attributes: [ {attr: `src`, value: this.portrait} ]
+                    attributes: [ {attr: `src`, value: this.portrait}, {attr: `alt`, value: this.name} ]
                     // use an arrow function expression so 'this' points to the photographer
                     // instance inside it and it is possible to access the superclass's method
                 } ].map(x => this.create(x));
 
-            // append h1 and new spans as child nodes to inner div
-            [ h1, span1, span2 ].forEach(x => div2.appendChild(x));
+            // append h1 and new ps as child nodes to inner div
+            [ h1, p1, p2 ].forEach(x => div2.appendChild(x));
 
             // append div2, button and img as child nodes to header div
             [ div2, button, img ].forEach(x => div1.appendChild(x));
@@ -236,14 +236,14 @@ const
             const
                 // specify new DOM elements to create
                 [ div1, label, div2, select, option1, option2, option3, i ] = [ {
-                    tag: `div`,
+                    tag: `div`, // !!! HIDE IN ACCESSIBILITY TREE !!!
                     attributes: [ {attr: `class`, value: `photographer-sort-media`} ]
                 }, {
                     tag: `label`,
                     attributes: [ {attr: `for`, value: `select-sort-media`} ],
                     properties: [ {prop: `textContent`, value: `Trier par`} ]
                 }, {
-                    tag: `div`,
+                    tag: `div`, // !!! HIDE IN ACCESSIBILITY TREE !!!
                     attributes: [ {attr: `class`, value: `select-sort-media-wrapper`} ]
                 }, {
                     tag: `select`,

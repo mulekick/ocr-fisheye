@@ -45,20 +45,23 @@ const
         get(cbLike, cbClick) {
             const
                 // specify new DOM elements to create
-                [ div1, img, div2, span1, span2, i ] = [ {
-                    tag: `div`,
+                [ article, a, img, div, p1, p2, i ] = [ {
+                    tag: `article`,
                     attributes: [ {attr: `class`, value: `photographer-media`} ]
                 }, {
-                    tag: `img`,
-                    attributes: [ {attr: `src`, value: this.image} ],
+                    tag: `a`,
+                    attributes: [ {attr: `href`, value: `#`} ],
                     listeners: [ {event: `click`, callback: cbClick} ]
                 }, {
-                    tag: `div`
+                    tag: `img`,
+                    attributes: [ {attr: `src`, value: this.image} ]
                 }, {
-                    tag: `span`,
+                    tag: `div` // !!! HIDE IN ACCESSIBILITY TREE !!!
+                }, {
+                    tag: `p`,
                     properties: [ {prop: `textContent`, value: this.title} ]
                 }, {
-                    tag: `span`,
+                    tag: `p`,
                     properties: [ {prop: `textContent`, value: String(this.likes)} ]
                 }, {
                     tag: `i`,
@@ -68,14 +71,17 @@ const
                     // instance inside it and it is possible to access the superclass's method
                 } ].map(x => this.create(x));
 
-            // append span and i as child nodes to inner div
-            [ span1, span2, i ].forEach(x => div2.appendChild(x));
+            // append ps and i as child nodes to inner div
+            [ p1, p2, i ].forEach(x => div.appendChild(x));
 
-            // append img and inner div as child nodes to outer div
-            [ img, div2 ].forEach(x => div1.appendChild(x));
+            // append img to a
+            [ img ].forEach(x => a.appendChild(x));
+
+            // append a and inner div as child nodes to article
+            [ a, div ].forEach(x => article.appendChild(x));
 
             // return
-            return div1;
+            return article;
         }
 
         lightbox() {
@@ -107,22 +113,25 @@ const
         get(cbLike, cbClick) {
             const
                 // specify new DOM elements to create
-                [ div1, video, source, div2, span1, span2, i ] = [ {
-                    tag: `div`,
+                [ article, a, video, source, div, p1, p2, i ] = [ {
+                    tag: `article`,
                     attributes: [ {attr: `class`, value: `photographer-media`} ]
                 }, {
-                    tag: `video`,
+                    tag: `a`,
+                    attributes: [ {attr: `href`, value: `#`} ],
                     listeners: [ {event: `click`, callback: cbClick} ]
+                }, {
+                    tag: `video`
                 }, {
                     tag: `source`,
                     attributes: [ {attr: `src`, value: this.video}, {attr: `type`, value: `video/mp4`} ]
                 }, {
-                    tag: `div`
+                    tag: `div` // !!! HIDE IN ACCESSIBILITY TREE !!!
                 }, {
-                    tag: `span`,
+                    tag: `p`,
                     properties: [ {prop: `textContent`, value: this.title} ]
                 }, {
-                    tag: `span`,
+                    tag: `p`,
                     properties: [ {prop: `textContent`, value: String(this.likes)} ]
                 }, {
                     tag: `i`,
@@ -133,14 +142,17 @@ const
             // append source as child nodes to video
             [ source ].forEach(x => video.appendChild(x));
 
-            // append span and i as child nodes to inner div
-            [ span1, span2, i ].forEach(x => div2.appendChild(x));
+            // append video to a
+            [ video ].forEach(x => a.appendChild(x));
 
-            // append img and inner div as child nodes to outer div
-            [ video, div2 ].forEach(x => div1.appendChild(x));
+            // append ps and i as child nodes to inner div
+            [ p1, p2, i ].forEach(x => div.appendChild(x));
+
+            // append a and inner div as child nodes to article
+            [ a, div ].forEach(x => article.appendChild(x));
 
             // return
-            return div1;
+            return article;
         }
 
         lightbox() {
