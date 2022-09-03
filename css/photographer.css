@@ -138,6 +138,9 @@
 }
 
 .photographer-media a {
+    display: inline-block;
+    width: 450px;
+    height: 450px;
     border-radius: 10px;
     cursor: pointer;
 }
@@ -216,6 +219,14 @@
     justify-content: space-between;
 }
 
+.media-lightbox button, .media-lightbox > div:nth-child(3) > span {
+    width: 42px;
+    height: 42px;
+    border: none;
+    background-color: transparent;
+    padding: 0;
+}
+
 .media-lightbox img {
     width: 42px;
     height: 42px;
@@ -252,6 +263,14 @@
     align-items: flex-end;
 }
 
+/* --------- CONTACT FORM ----------*/
+
+.modal header button {
+    border: none;
+    background-color: transparent;
+    padding: 0;
+}
+
 /* ------- END ADDED STYLES ------- */
 
 #contact_modal {
@@ -267,7 +286,7 @@
 
 .modal {
     /* added styles */
-    width: calc(50% - 70px);
+    width: calc(40% - 70px);
     padding: 35px;
     margin: auto;
     display: flex;
@@ -276,14 +295,16 @@
     justify-content: space-between;
     position: absolute;
     top: 50px;
-    left: 25%;
+    left: 30%;
     background-color: #DB8876;
     border-radius: 5px;
 }
 
 .modal header {
-    justify-content: space-between;
     width: 100%;
+    height: 150px;
+    justify-content: space-between;
+    align-items: baseline;
 }
 
 .modal header img {
@@ -291,9 +312,10 @@
 }
 
 .modal header h2 {
+    margin: 0px;
     font-size: 64px;
     font-weight: normal;
-    text-align: center;
+    text-align: left;
 }
 
 form {

@@ -1,11 +1,17 @@
 const
     displayModal = function() {
-        const modal = document.getElementById(`contact_modal`);
-        modal.style.display = `block`;
+        // hide header and main on photographer page
+        [ `header`, `main` ].forEach(x => document.querySelector(x).setAttribute(`style`, `display:none`));
+        // display contact form
+        [ `#contact_modal` ].forEach(x => document.querySelector(x).setAttribute(`style`, `display:block`));
+        // set focus
+        document.querySelector(`#contact_modal`).focus();
     },
     closeModal = function() {
-        const modal = document.getElementById(`contact_modal`);
-        modal.style.display = `none`;
+        // hide contact form
+        [ `#contact_modal` ].forEach(x => document.querySelector(x).removeAttribute(`style`));
+        // display header and main on photographer page
+        [ `header`, `main` ].forEach(x => document.querySelector(x).removeAttribute(`style`));
     },
     logFormData = function(e) {
         // prevent form submission
@@ -19,6 +25,9 @@ const
         for (const [ key, value ] of data)
             // log
             console.log(`field ${ key }: ${ value }\n`);
+
+        // close form
+        closeModal();
     };
 
 export {displayModal, closeModal, logFormData};

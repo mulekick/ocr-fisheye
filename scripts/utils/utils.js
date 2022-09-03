@@ -38,17 +38,19 @@ const
         event.target.previousElementSibling.textContent = this.media[index][`likes`];
     },
     // 'open lightbox' click event listener callback
-    openLightbox = function(...[ media ]) {
-        const
-            // retrieve opened media index
-            index = this.media.findIndex(x => x[`id`] === media.id);
-
-        // throw error if media not found
-        if (index === -1)
-            throw new Error(`invalid media id`);
-
-        // create new elements for the photographer lightbox div and add it to DOM
-        document.querySelector(`body`).append(this.lightbox.get(media));
+    openLightbox = function(...[ index ]) {
+        // update current lightbox media index
+        this.lightbox.index = index;
+        // display lightbox
+        this.lightbox.display(true);
+    },
+    // left / right arrow keys navigation management
+    manageKeyPress = e => {
+        // retrieve relevant element as per pressed key
+        const elt = e.code === `ArrowLeft` ? document.querySelector(`.media-lightbox > div:nth-child(1) > button`) : e.code === `ArrowRight` ? document.querySelector(`.media-lightbox > div:nth-child(3) > button:nth-child(2)`) : null;
+        // dispatch click event
+        if (elt)
+            elt.dispatchEvent(new Event(`click`));
     };
 
-export {MEDIA_SORT_POPULAR, MEDIA_SORT_DATE, MEDIA_SORT_TITLE, RGX_URL_VALIDATION, manageMediaLikes, openLightbox};
+export {MEDIA_SORT_POPULAR, MEDIA_SORT_DATE, MEDIA_SORT_TITLE, RGX_URL_VALIDATION, manageMediaLikes, openLightbox, manageKeyPress};

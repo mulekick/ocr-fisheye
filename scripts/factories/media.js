@@ -50,13 +50,13 @@ const
                     attributes: [ {attr: `class`, value: `photographer-media`} ]
                 }, {
                     tag: `a`,
-                    attributes: [ {attr: `href`, value: `#`} ],
+                    attributes: [ {attr: `href`, value: `#`}, {attr: `aria-label`, value: `${ this.title }, closeup view`} ],
                     listeners: [ {event: `click`, callback: cbClick} ]
                 }, {
                     tag: `img`,
                     attributes: [ {attr: `src`, value: this.image} ]
                 }, {
-                    tag: `div` // !!! HIDE IN ACCESSIBILITY TREE !!!
+                    tag: `div`
                 }, {
                     tag: `p`,
                     properties: [ {prop: `textContent`, value: this.title} ]
@@ -65,7 +65,7 @@ const
                     properties: [ {prop: `textContent`, value: String(this.likes)} ]
                 }, {
                     tag: `i`,
-                    attributes: [ {attr: `class`, value: `fa-solid fa-heart`} ],
+                    attributes: [ {attr: `class`, value: `fa-solid fa-heart`}, {attr: `aria-label`, value: `likes`} ],
                     listeners: [ {event: `click`, callback: cbLike} ]
                     // use an arrow function expression so 'this' points to the photographer
                     // instance inside it and it is possible to access the superclass's method
@@ -118,7 +118,7 @@ const
                     attributes: [ {attr: `class`, value: `photographer-media`} ]
                 }, {
                     tag: `a`,
-                    attributes: [ {attr: `href`, value: `#`} ],
+                    attributes: [ {attr: `href`, value: `#`}, {attr: `aria-label`, value: `${ this.title }, closeup view`} ],
                     listeners: [ {event: `click`, callback: cbClick} ]
                 }, {
                     tag: `video`
@@ -126,7 +126,7 @@ const
                     tag: `source`,
                     attributes: [ {attr: `src`, value: this.video}, {attr: `type`, value: `video/mp4`} ]
                 }, {
-                    tag: `div` // !!! HIDE IN ACCESSIBILITY TREE !!!
+                    tag: `div`
                 }, {
                     tag: `p`,
                     properties: [ {prop: `textContent`, value: this.title} ]
@@ -135,7 +135,7 @@ const
                     properties: [ {prop: `textContent`, value: String(this.likes)} ]
                 }, {
                     tag: `i`,
-                    attributes: [ {attr: `class`, value: `fa-solid fa-heart`} ],
+                    attributes: [ {attr: `class`, value: `fa-solid fa-heart`}, {attr: `aria-label`, value: `likes`} ],
                     listeners: [ {event: `click`, callback: cbLike} ]
                 } ].map(x => this.create(x));
 

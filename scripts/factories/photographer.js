@@ -4,7 +4,8 @@
 /* eslint-disable class-methods-use-this */
 
 // import modules
-import {MEDIA_SORT_POPULAR, MEDIA_SORT_DATE, MEDIA_SORT_TITLE, manageMediaLikes, openLightbox} from "../utils/utils.js";
+import {MEDIA_SORT_POPULAR, MEDIA_SORT_DATE, MEDIA_SORT_TITLE, manageMediaLikes, openLightbox, manageKeyPress} from "../utils/utils.js";
+import {displayModal, closeModal, logFormData} from "../utils/contactForm.js";
 import {domNodeCreator} from "../utils/nodeCreator.js";
 import {mediaFactory} from "./media.js";
 
@@ -29,77 +30,77 @@ const
                 return cf.instance;
             // else, create the singleton and init its properties
             this.mediaList = pmedialist;
+            this.currentIndex = null;
             // store 'this' in the static singleton, return is implicit
             cf.instance = this;
         }
 
+        // value getter
+        get index() { return this.currentIndex; }
+
+        // value setter
+        set index(i) { this.currentIndex = i; }
+
         // use a factory function to create the photographer lightbox div in the DOM
-        get(media) {
+        get() {
             const
                 // specify new DOM elements to create
-                [ div1, div2, div3, img1, div5, img2, img3, span ] = [ {
+                [ div1, div2, div3, btn1, img1, div5, btn2, img2, btn3, img3, span ] = [ {
                     tag: `div`,
                     attributes: [ {attr: `class`, value: `media-lightbox-container`} ]
                 }, {
                     tag: `div`,
-                    attributes: [ {attr: `class`, value: `media-lightbox`} ]
+                    attributes: [ {attr: `class`, value: `media-lightbox`}, {attr: `tabindex`, value: `0`}, {attr: `aria-label`, value: `image closeup view`} ]
                 }, {
                     tag: `div`
-                }, {
-                    tag: `img`,
-                    attributes: [ {attr: `src`, value: `assets/icons/navigate-left-lightbox.svg`} ],
+                },
+                {
+                    tag: `button`,
                     // navigate to previous media
-                    listeners: [ {
-                        event: `click`,
-                        callback: () => {
-                            const
-                                // find current media index
-                                index = this.mediaList.media.findIndex(x => x[`id`] === media.id);
-                            // remove current lightbox
-                            document.querySelector(`.media-lightbox-container`).remove();
-                            // open previous media in lightbox
-                            if (index > 0)
-                                document.querySelector(`body`).append(this.get(mediaFactory(this.mediaList.media[index - 1])));
-                        }
-                    } ]
+                    listeners: [ {event: `click`, callback: () => this.display(this.index > 0, this.index--)} ]
+                }, {
+                    tag: `img`,
+                    attributes: [ {attr: `src`, value: `assets/icons/navigate-left-lightbox.svg`}, {attr: `aria-label`, value: `Previous image`} ]
                 }, {
                     tag: `div`
-                }, {
-                    tag: `img`,
-                    attributes: [ {attr: `src`, value: `assets/icons/close-lightbox.svg`} ],
+                },
+                {
+                    tag: `button`,
                     // close lightbox
-                    listeners: [ {event: `click`, callback: () => document.querySelector(`.media-lightbox-container`).remove()} ]
-                }, {
+                    listeners: [ {event: `click`, callback: () => this.display(false)} ]
+                },
+                {
                     tag: `img`,
-                    attributes: [ {attr: `src`, value: `assets/icons/navigate-right-lightbox.svg`} ],
+                    attributes: [ {attr: `src`, value: `assets/icons/close-lightbox.svg`}, {attr: `aria-label`, value: `Close dialog`} ]
+                },
+                {
+                    tag: `button`,
                     // navigate to next media
-                    listeners: [ {
-                        event: `click`,
-                        callback: () => {
-                            const
-                                // find current media index
-                                index = this.mediaList.media.findIndex(x => x[`id`] === media.id);
-                            // remove current lightbox
-                            document.querySelector(`.media-lightbox-container`).remove();
-                            // open next media in lightbox
-                            if (index <  this.mediaList.media.length - 1)
-                                document.querySelector(`body`).append(this.get(mediaFactory(this.mediaList.media[index + 1])));
-                        }
-                    } ]
+                    listeners: [ {event: `click`, callback: () => this.display(this.index < this.mediaList.media.length - 1, this.index++)} ]
+                },  {
+                    tag: `img`,
+                    attributes: [ {attr: `src`, value: `assets/icons/navigate-right-lightbox.svg`}, {attr: `aria-label`, value: `Next image`} ]
                 }, {
                     tag: `span`
                 } ].map(x => this.create(x)),
 
                 // retrieve media div
-                div4 = media.lightbox();
+                div4 = mediaFactory(this.mediaList.media[this.index]).lightbox();
 
-            // append img1 to div3
-            [ img1 ].forEach(x => div3.appendChild(x));
+            // append img1 to btn1
+            [ img1 ].forEach(x => btn1.appendChild(x));
 
-            // append img2, img3 and span to div5
-            [ img2, img3, span ].forEach(x => div5.appendChild(x));
+            // append btn1 to div3
+            [ btn1 ].forEach(x => div3.appendChild(x));
 
-            // append div3 , media div and div5 to div2
+            // append img2 to btn2 and img3 to btn3
+            [ img2 ].forEach(x => btn2.appendChild(x));
+            [ img3 ].forEach(x => btn3.appendChild(x));
+
+            // append btn2, btn3 and span to div5
+            [ btn2, btn3, span ].forEach(x => div5.appendChild(x));
+
+            // append div3, media div and div5 to div2
             [ div3, div4, div5 ].forEach(x => div2.appendChild(x));
 
             // append div2 to div1
@@ -107,6 +108,42 @@ const
 
             // return lightbox div
             return div1;
+        }
+
+        // manage lightbox display
+        display(v) {
+
+            const lb = document.querySelector(`.media-lightbox-container`);
+
+            // remove current lightbox
+            if (lb)
+                lb.remove();
+
+            // display new lightbox
+            if (v) {
+
+                // hide header and main on photographer page
+                [ `header`, `main` ].forEach(x => document.querySelector(x).setAttribute(`style`, `display:none`));
+
+                // open current media in new lightbox
+                document.querySelector(`body`).append(this.get());
+
+                // add event listener for arrow keys press
+                document.addEventListener(`keydown`, manageKeyPress);
+
+                // set focus
+                document.querySelector(`.media-lightbox`).focus();
+
+            // hide lightbox
+            } else {
+
+                // display header and main on photographer page
+                [ `header`, `main` ].forEach(x => document.querySelector(x).removeAttribute(`style`));
+
+                // remove event listener for arrow keys press
+                document.removeEventListener(`keydown`, manageKeyPress);
+
+            }
         }
     },
     // -------------------------------------------------------
@@ -142,7 +179,7 @@ const
                     tag: `article`
                 }, {
                     tag: `img`,
-                    attributes: [ {attr: `src`, value: this.portrait}, {attr: `alt`, value: this.name} ]
+                    attributes: [ {attr: `src`, value: this.portrait}, {attr: `alt`, value: ``} ]
                 }, {
                     tag: `a`,
                     attributes: [ {attr: `href`, value: `photographer.html?pid=${ String(this.id) }`} ]
@@ -150,7 +187,7 @@ const
                     tag: `h2`,
                     properties: [ {prop: `textContent`, value: this.name} ]
                 }, {
-                    tag: `div` // !!! HIDE IN ACCESSIBILITY TREE !!!
+                    tag: `div`
                 }, {
                     tag: `p`,
                     properties: [ {prop: `textContent`, value: `${ this.city }, ${ this.country }`} ]
@@ -185,10 +222,10 @@ const
             const
                 // specify new DOM elements to create
                 [ div1, div2, h1, p1, p2, button, img ] = [ {
-                    tag: `div`, // !!! HIDE IN ACCESSIBILITY TREE !!!
+                    tag: `div`,
                     attributes: [ {attr: `class`, value: `photographer-header`} ]
                 }, {
-                    tag: `div` // !!! HIDE IN ACCESSIBILITY TREE !!!
+                    tag: `div`
                 }, {
                     tag: `h1`,
                     properties: [ {prop: `textContent`, value: this.name} ]
@@ -200,11 +237,24 @@ const
                     properties: [ {prop: `textContent`, value: this.tagline} ]
                 }, {
                     tag: `button`,
-                    attributes: [ {attr: `id`, value: `contact-open`}, {attr: `class`, value: `contact_button`} ],
-                    properties: [ {prop: `textContent`, value: `Contactez-moi`} ]
+                    attributes: [ {attr: `id`, value: `contact-open`}, {attr: `class`, value: `contact_button`}, {attr: `aria-label`, value: `Contact Me`} ],
+                    properties: [ {prop: `textContent`, value: `Contactez-moi`} ],
+                    // open contact form
+                    listeners: [ {
+                        event: `click`,
+                        callback: () => {
+                            // update form title
+                            document.querySelector(`.modal > header > h2`).textContent = `Contactez-moi ${ this.name }`;
+                            // add event listeners to popup
+                            document.querySelector(`#contact-close`).addEventListener(`click`, closeModal);
+                            document.querySelector(`#contact-form`).addEventListener(`submit`, logFormData);
+                            // launch popup
+                            displayModal();
+                        }
+                    } ]
                 }, {
                     tag: `img`,
-                    attributes: [ {attr: `src`, value: this.portrait}, {attr: `alt`, value: this.name} ]
+                    attributes: [ {attr: `src`, value: this.portrait}, {attr: `alt`, value: ``} ]
                     // use an arrow function expression so 'this' points to the photographer
                     // instance inside it and it is possible to access the superclass's method
                 } ].map(x => this.create(x));
@@ -236,18 +286,18 @@ const
             const
                 // specify new DOM elements to create
                 [ div1, label, div2, select, option1, option2, option3, i ] = [ {
-                    tag: `div`, // !!! HIDE IN ACCESSIBILITY TREE !!!
+                    tag: `div`,
                     attributes: [ {attr: `class`, value: `photographer-sort-media`} ]
                 }, {
                     tag: `label`,
                     attributes: [ {attr: `for`, value: `select-sort-media`} ],
                     properties: [ {prop: `textContent`, value: `Trier par`} ]
                 }, {
-                    tag: `div`, // !!! HIDE IN ACCESSIBILITY TREE !!!
+                    tag: `div`,
                     attributes: [ {attr: `class`, value: `select-sort-media-wrapper`} ]
                 }, {
                     tag: `select`,
-                    attributes: [ {attr: `id`, value: `select-sort-media`} ],
+                    attributes: [ {attr: `id`, value: `select-sort-media`}, {attr: `aria-label`, value: `Order by`} ],
                     listeners: [ {
                         event: `change`,
                         // use an arrow function expression so 'this' points to the photographer
@@ -286,16 +336,14 @@ const
                                         return 0;
                                     }
                                 })
-                                .forEach(x => {
+                                .forEach((x, index) => {
                                     const
                                         // create a new media object instance
                                         media = mediaFactory(x);
                                     // retrieve a new element for the media and add it to DOM, bind like management
                                     // function to the photographer media list object to preserve a reference to it
                                     // as well as to the photographer likes object during listener's callback execution
-                                    list.appendChild(media.get(manageMediaLikes.bind(this, media, plikes), openLightbox.bind(this, media)));
-
-
+                                    list.appendChild(media.get(manageMediaLikes.bind(this, media, plikes), openLightbox.bind(this, index)));
                                 });
 
                             // append media list to DOM
@@ -348,7 +396,7 @@ const
                     properties: [ {prop: `textContent`, value: `${ media.reduce((r, x) => (r += x[`likes`]), 0) } `} ]
                 }, {
                     tag: `i`,
-                    attributes: [ {attr: `class`, value: `fa-solid fa-heart`} ]
+                    attributes: [ {attr: `class`, value: `fa-solid fa-heart`}, {attr: `aria-label`, value: `likes`} ]
                 }, {
                     tag: `span`,
                     properties: [ {prop: `textContent`, value: `${ this.price }€ / jour`} ]
