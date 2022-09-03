@@ -5,7 +5,7 @@
 
 // import modules
 import {MEDIA_SORT_POPULAR, MEDIA_SORT_DATE, MEDIA_SORT_TITLE, manageMediaLikes, openLightbox, manageKeyPress} from "../utils/utils.js";
-import {displayModal, closeModal, logFormData} from "../utils/contactForm.js";
+import {displayModal} from "../utils/contactForm.js";
 import {domNodeCreator} from "../utils/nodeCreator.js";
 import {mediaFactory} from "./media.js";
 
@@ -245,9 +245,6 @@ const
                         callback: () => {
                             // update form title
                             document.querySelector(`.modal > header > h2`).textContent = `Contactez-moi ${ this.name }`;
-                            // add event listeners to popup
-                            document.querySelector(`#contact-close`).addEventListener(`click`, closeModal);
-                            document.querySelector(`#contact-form`).addEventListener(`submit`, logFormData);
                             // launch popup
                             displayModal();
                         }
