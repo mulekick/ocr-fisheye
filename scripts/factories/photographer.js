@@ -5,7 +5,6 @@
 
 // import modules
 import {MEDIA_SORT_POPULAR, MEDIA_SORT_DATE, MEDIA_SORT_TITLE, manageMediaLikes, openLightbox, manageKeyPress} from "../utils/utils.js";
-import {displayModal} from "../utils/contactForm.js";
 import {domNodeCreator} from "../utils/nodeCreator.js";
 import {mediaFactory} from "./media.js";
 
@@ -147,6 +146,156 @@ const
         }
     },
     // -------------------------------------------------------
+    // use a singleton to manage the contact form popup
+    contactFormSingleton = class extends domNodeCreator {
+        // constructor
+        constructor(pheader) {
+            // call superclass constructor
+            super();
+            const
+                // retrieve constructor function
+                cf = Object.getPrototypeOf(this).constructor;
+            // if the static singleton is not null ...
+            if (cf.instance instanceof cf)
+                // return it (any call to new() will always return the same object)
+                return cf.instance;
+            // else, create the singleton and init its properties
+            this.header = pheader;
+            // store 'this' in the static singleton, return is implicit
+            cf.instance = this;
+        }
+
+        // use a factory function to create the contact form lightbox div in the DOM
+        get() {
+            const
+                // specify new DOM elements to create
+                [ div1, div2, header, h2, btn1, img, form, div3, label3, input3, div4, label4, input4, div5, label5, input5, div6, label6, textarea6, btn2 ] = [ {
+                    tag: `div`,
+                    attributes: [ {attr: `id`, value: `contact_modal`}, {attr: `tabindex`, value: `0`}, {attr: `aria-labelledby`, value: `form-title`} ]
+                }, {
+                    tag: `div`,
+                    attributes: [ {attr: `class`, value: `modal`} ]
+                }, {
+                    tag: `header`
+                }, {
+                    tag: `h2`,
+                    attributes: [ {attr: `id`, value: `form-title`} ],
+                    properties: [ {prop: `textContent`, value: `Contactez-moi ${ this.header.name }`} ]
+                }, {
+                    tag: `button`,
+                    attributes: [ {attr: `id`, value: `contact-close`}, {attr: `aria-label`, value: `Close Contact Form`} ],
+                    listeners: [ {
+                        event: `click`,
+                        callback: () => {
+                            // remove contact form popup
+                            document.querySelector(`#contact_modal`).remove();
+                            // reset styles for header and main on photographer page
+                            [ `header`, `main` ].forEach(x => document.querySelector(x).removeAttribute(`style`));
+                        }
+                    } ]
+                }, {
+                    tag: `img`,
+                    attributes: [ {attr: `src`, value: `assets/icons/close-form.svg`} ]
+                }, {
+                    tag: `form`,
+                    attributes: [ {attr: `id`, value: `contact-form`}, {attr: `action`, value: `#`}, {attr: `method`, value: `post`} ],
+                    listeners: [ {
+                        event: `submit`,
+                        callback: e => {
+                            // prevent form submission
+                            e.preventDefault();
+
+                            const
+                                // retrieve form data
+                                data = new FormData(e.target);
+
+                            // destructure current entry into local variables
+                            for (const [ key, value ] of data)
+                                // log
+                                console.log(`field ${ key }: ${ value }\n`);
+
+                            // close form
+                            document.querySelector(`#contact-close`).dispatchEvent(new Event(`click`));
+                        }
+                    } ]
+                }, {
+                    tag: `div`
+                }, {
+                    tag: `label`,
+                    attributes: [ {attr: `for`, value: `first`} ],
+                    properties: [ {prop: `textContent`, value: `Prénom`} ]
+                }, {
+                    tag: `input`,
+                    attributes: [ {attr: `type`, value: `text`}, {attr: `id`, value: `first`}, {attr: `name`, value: `first`}, {attr: `aria-label`, value: `First name`} ]
+                }, {
+                    tag: `div`
+                }, {
+                    tag: `label`,
+                    attributes: [ {attr: `for`, value: `last`} ],
+                    properties: [ {prop: `textContent`, value: `Nom`} ]
+                }, {
+                    tag: `input`,
+                    attributes: [ {attr: `type`, value: `text`}, {attr: `id`, value: `last`}, {attr: `name`, value: `last`}, {attr: `aria-label`, value: `Last name`} ]
+                }, {
+                    tag: `div`
+                }, {
+                    tag: `label`,
+                    attributes: [ {attr: `for`, value: `email`} ],
+                    properties: [ {prop: `textContent`, value: `Email`} ]
+                }, {
+                    tag: `input`,
+                    attributes: [ {attr: `type`, value: `email`}, {attr: `id`, value: `email`}, {attr: `name`, value: `email`}, {attr: `aria-label`, value: `Email`} ]
+                }, {
+                    tag: `div`
+                }, {
+                    tag: `label`,
+                    attributes: [ {attr: `for`, value: `message`} ],
+                    properties: [ {prop: `textContent`, value: `Votre message`} ]
+                }, {
+                    tag: `textarea`,
+                    attributes: [ {attr: `id`, value: `message`}, {attr: `name`, value: `message`}, {attr: `aria-label`, value: `Your message`} ]
+                }, {
+                    tag: `button`,
+                    attributes: [ {attr: `class`, value: `contact_button`}, {attr: `aria-label`, value: `Send`} ],
+                    properties: [ {prop: `textContent`, value: `Envoyer`} ]
+                } ].map(x => this.create(x));
+
+            // append img to btn1
+            [ img ].forEach(x => btn1.appendChild(x));
+
+            // append h2 and btn1 to header
+            [ h2, btn1 ].forEach(x => header.appendChild(x));
+
+            // append labels and inputs to divs
+            [ label3, input3 ].forEach(x => div3.appendChild(x));
+            [ label4, input4 ].forEach(x => div4.appendChild(x));
+            [ label5, input5 ].forEach(x => div5.appendChild(x));
+            [ label6, textarea6 ].forEach(x => div6.appendChild(x));
+
+            // append divs and btn2 to form
+            [ div3, div4, div5, div6, btn2 ].forEach(x => form.appendChild(x));
+
+            // append header and form to div2
+            [ header, form ].forEach(x => div2.appendChild(x));
+
+            // append div2 to div1
+            [ div2 ].forEach(x => div1.appendChild(x));
+
+            // return div1
+            return div1;
+        }
+
+        // manage contact popup display
+        display() {
+            // hide header and main on photographer page
+            [ `header`, `main` ].forEach(x => document.querySelector(x).setAttribute(`style`, `display:none`));
+            // open contact form popup
+            document.querySelector(`body`).append(this.get());
+            // set focus
+            document.querySelector(`#contact_modal`).focus();
+        }
+    },
+    // -------------------------------------------------------
     // base class for the factory; it will be extended to provide objects with methods to override
     photographer = class extends domNodeCreator {
         // constructor
@@ -215,8 +364,16 @@ const
         }
 
     },
-    // constructor is not specified since it would be empty
+    // use a constructor there to store the contact form popup
     photographerHeader = class extends photographer {
+        // constructor
+        constructor(data) {
+            // call superclass constructor
+            super(data);
+            // use a singleton to manage the lightbox display
+            this.contactForm = new contactFormSingleton(this);
+        }
+
         // use another factory function to create the photographer header in the DOM
         get() {
             const
@@ -243,10 +400,10 @@ const
                     listeners: [ {
                         event: `click`,
                         callback: () => {
-                            // update form title
-                            document.querySelector(`.modal > header > h2`).textContent = `Contactez-moi ${ this.name }`;
-                            // launch popup
-                            displayModal();
+                            // hide header and main on photographer page
+                            [ `header`, `main` ].forEach(x => document.querySelector(x).setAttribute(`style`, `display:none`));
+                            // display contact form
+                            this.contactForm.display();
                         }
                     } ]
                 }, {

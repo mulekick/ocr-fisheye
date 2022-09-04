@@ -2,7 +2,6 @@
 
 // import modules
 import {RGX_URL_VALIDATION} from "../utils/utils.js";
-import {closeModal, logFormData} from "../utils/contactForm.js";
 import {photographerFactory} from "../factories/photographer.js";
 
 // use an async IIFE so we are able to wait for the resolution of promises during execution
@@ -50,10 +49,6 @@ import {photographerFactory} from "../factories/photographer.js";
 
         // dispatch a change event on the select to display photographer's media list sorted by default
         document.querySelector(`#select-sort-media`).dispatchEvent(new Event(`change`));
-
-        // add event listeners to contact form popup
-        document.querySelector(`#contact-close`).addEventListener(`click`, closeModal);
-        document.querySelector(`#contact-form`).addEventListener(`submit`, logFormData);
 
     } catch (err) {
         // write to stderr
