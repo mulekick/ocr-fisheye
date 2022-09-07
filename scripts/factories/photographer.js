@@ -1,5 +1,4 @@
 /* eslint-disable no-constructor-return */
-/* eslint-disable no-invalid-this */
 /* eslint-disable no-empty-function */
 /* eslint-disable class-methods-use-this */
 
@@ -59,7 +58,7 @@ const
                     listeners: [ {event: `click`, callback: () => this.display(this.index > 0, this.index--)} ]
                 }, {
                     tag: `img`,
-                    attributes: [ {attr: `src`, value: `assets/icons/navigate-left-lightbox.svg`}, {attr: `aria-label`, value: `Previous image`} ]
+                    attributes: [ {attr: `src`, value: `assets/icons/navigate-left-lightbox.svg`}, {attr: `alt`, value: `Previous image`} ]
                 }, {
                     tag: `div`
                 },
@@ -70,7 +69,7 @@ const
                 },
                 {
                     tag: `img`,
-                    attributes: [ {attr: `src`, value: `assets/icons/close-lightbox.svg`}, {attr: `aria-label`, value: `Close dialog`} ]
+                    attributes: [ {attr: `src`, value: `assets/icons/close-lightbox.svg`}, {attr: `alt`, value: `Close dialog`} ]
                 },
                 {
                     tag: `button`,
@@ -78,7 +77,7 @@ const
                     listeners: [ {event: `click`, callback: () => this.display(this.index < this.mediaList.media.length - 1, this.index++)} ]
                 },  {
                     tag: `img`,
-                    attributes: [ {attr: `src`, value: `assets/icons/navigate-right-lightbox.svg`}, {attr: `aria-label`, value: `Next image`} ]
+                    attributes: [ {attr: `src`, value: `assets/icons/navigate-right-lightbox.svg`}, {attr: `alt`, value: `Next image`} ]
                 }, {
                     tag: `span`
                 } ].map(x => this.create(x)),
@@ -195,7 +194,7 @@ const
                     } ]
                 }, {
                     tag: `img`,
-                    attributes: [ {attr: `src`, value: `assets/icons/close-form.svg`} ]
+                    attributes: [ {attr: `src`, value: `assets/icons/close-form.svg`}, {attr: `alt`, value: ``} ]
                 }, {
                     tag: `form`,
                     attributes: [ {attr: `id`, value: `contact-form`}, {attr: `action`, value: `#`}, {attr: `method`, value: `post`} ],

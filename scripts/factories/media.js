@@ -50,11 +50,11 @@ const
                     attributes: [ {attr: `class`, value: `photographer-media`} ]
                 }, {
                     tag: `a`,
-                    attributes: [ {attr: `href`, value: `#`}, {attr: `aria-label`, value: `${ this.title }, closeup view`} ],
+                    attributes: [ {attr: `href`, value: `#`} ],
                     listeners: [ {event: `click`, callback: cbClick} ]
                 }, {
                     tag: `img`,
-                    attributes: [ {attr: `src`, value: this.image} ]
+                    attributes: [ {attr: `src`, value: this.image}, {attr: `alt`, value: `${ this.title }, closeup view`} ]
                 }, {
                     tag: `div`
                 }, {
@@ -91,7 +91,7 @@ const
                     tag: `div`
                 }, {
                     tag: `img`,
-                    attributes: [ {attr: `class`, value: `media`}, {attr: `src`, value: this.image} ]
+                    attributes: [ {attr: `class`, value: `media`}, {attr: `src`, value: this.image}, {attr: `alt`, value: this.title} ]
                 }, {
                     tag: `br`
                 }, {
@@ -162,7 +162,7 @@ const
                     tag: `div`
                 }, {
                     tag: `video`,
-                    attributes: [ {attr: `class`, value: `media`}, {attr: `controls`, value: `1`} ]
+                    attributes: [ {attr: `class`, value: `media`}, {attr: `controls`, value: `1`}, {attr: `title`, value: this.title} ]
                 }, {
                     tag: `source`,
                     attributes: [ {attr: `src`, value: this.video}, {attr: `type`, value: `video/mp4`} ]

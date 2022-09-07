@@ -1,5 +1,3 @@
-// eslint-disable-next-line no-unused-vars
-
 // import modules
 import {RGX_URL_VALIDATION} from "../utils/utils.js";
 import {photographerFactory} from "../factories/photographer.js";
